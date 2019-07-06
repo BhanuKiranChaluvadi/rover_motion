@@ -5,45 +5,61 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cmath>
 using std::cout;
 using std::ifstream;
 using std::istringstream;
 using std::string;
 using std::vector;
 
-enum class Dir {E, W, N, S};
+
+
+enum class Dir {E=0, W=90, N=180, S=270};
 enum class Move{L, R, M};
 
-struct pose {
+struct Pose {
     int X;
     int Y;
-    Dir dir;
+    int theta;      // degrees
 
-    pose(): X(0), Y(0), dir(Dir::E)  {}
+    Pose(): X(0), Y(0), theta(0)  {}
 };
 
-void printpose(pose p) {
-    cout <<p.X << " " << p.Y << " ";
-    switch (p.dir)
-    {
-    case Dir::E : 
-        cout <<"E \n";
-        return;
-    case Dir::W : 
-        cout <<"W \n";
-        return;
-    case Dir::N :
-        cout <<"N \n";
-        return;
-    case Dir::S : 
-        cout <<"S \n";
-        return;
-    default: 
-        cout << "0  ";
-        return;
+char convert_ThetatoDir(const int theta) {
+    if (theta == 0  || theta == 360) return 'E';
+    else if (theta == 90)   return 'N';
+    else if (theta == 180)  return 'W';
+    else if (theta == 270)  return 'S';
+    else {
+        cout << "theta is out of scope !! \n" ;
+        return 'x';
     }
 }
-void printcmd(Move cmd){
+
+int convert_DirtoTheata(const char dir) {
+    if      (dir == 'E') return 0;
+    else if (dir == 'N') return 90;
+    else if (dir == 'W') return 180;
+    else if (dir == 'S') return 270;
+    else {
+        cout << " Direction not found !! \n";
+        return -1;
+    }
+}
+
+int normalizeTheta(int theta){
+    theta = theta % 360 ;
+    if(theta < 0) {
+        theta += 360;
+    }
+    return theta;
+}
+
+
+void printpose(const Pose p) {
+    cout <<p.X << " " << p.Y << " " << convert_ThetatoDir(p.theta)<< "\n";
+}
+void printcmd(const Move cmd){
     switch (cmd)
     {
     case Move::L :
@@ -61,23 +77,23 @@ void printcmd(Move cmd){
     }
 }
 
-pose ParseposeLine(string line) {
+Pose ParseposeLine(string line) {
     istringstream sline(line);
     int x, y;
     char c;
     sline >> x >> y >> c ;
-    pose p;
+    Pose p;
     p.X = x;
     p.Y = y;
-    if      (c == 'E') p.dir = Dir::E;
-    else if (c == 'W') p.dir = Dir::W;
-    else if (c == 'N') p.dir = Dir::N;
-    else if (c == 'S') p.dir = Dir::S;
+    if      (c == 'E') p.theta = 0;
+    else if (c == 'N') p.theta = 90;
+    else if (c == 'W') p.theta = 180;
+    else if (c == 'S') p.theta = 270;
     else cout << " Direction not found \n";
     return p;
 }
 
-
+static double constexpr pi = 3.14159265;
 
 vector<Move> ParseCmdLine(string line) {
     istringstream sline(line);
@@ -92,29 +108,51 @@ vector<Move> ParseCmdLine(string line) {
     return cmds;
 }
 
+void executeCommand(Pose &pose, Move cmd) {
+    switch (cmd)
+    {
+    case Move::L :
+        // cout << "L " ;
+        pose.theta += 90 ;
+        pose.theta = normalizeTheta(pose.theta);
+        break;
+    case Move::R :
+        // cout << "R " ;
+        pose.theta -= 90 ;
+        pose.theta = normalizeTheta(pose.theta);
+        break;
+    case Move::M :
+        // cout << "M " ;
+        // cout << pose.theta << " " << int(cos(pose.theta*pi/180)) << " ";
+        pose.X += int(cos(pose.theta*pi/180)) ;
+        pose.Y += int(sin(pose.theta*pi/180)) ;
+        break;
+    default:
+        cout << "command not found !! " ;
+        break;
+    }
+}
 
 void ReadFile(string path) {
     ifstream myfile (path);
     if (myfile) {
         string line;
-        // while (getline(myfile, line)) {
-        //     cout << "Read line: "<< line << "\n"; 
-        //     // vector<Move> cmds = ParseCmdLine(line);
-        //     // cout << "size of commands: "<< cmds.size() << "\n"; 
-        //     // for(auto cmd : cmds)
-        //     //     cout << printcmd(cmd);
-        //     pose p = ParseposeLine(line);
-        //     printpose(p);
-        // }
-
         getline(myfile, line);
-        pose p = ParseposeLine(line);
+        Pose p = ParseposeLine(line);
         getline(myfile, line);
         vector<Move> cmds = ParseCmdLine(line);
+        cout << "Initial pose: \n";
+        cout << p.theta << " ";
         printpose(p);
         for(auto cmd : cmds)
             printcmd(cmd);
         cout << "\n";
+        cout << "start of execution: \n" ;
+        for (auto cmd : cmds) {
+            executeCommand(p, cmd);
+            // cout << p.theta << " ";
+            printpose(p);
+        }
     }
 }
 
@@ -122,13 +160,9 @@ void ReadFile(string path) {
 
 int main() 
 {   
-    pose rover1_pose;
+    Pose rover1_pose;
     // Debug
-    cout << "X: " << rover1_pose.X << " Y: " << rover1_pose.Y << " dir: " ;
-    if(rover1_pose.dir == Dir::E)
-        cout << "yes \n";
-    else
-        cout << "no \n";
+    // out << "X: " << rover1_pose.X << " Y: " << rover1_pose.Y << " dir: " ;
 
     ReadFile("cmd.txt");
 
