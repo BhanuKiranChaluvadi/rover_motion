@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <tuple>
 #include <cmath>
 using std::cout;
 using std::ifstream;
@@ -55,7 +56,6 @@ int normalizeTheta(int theta){
     return theta;
 }
 
-
 void printpose(const Pose p) {
     cout <<p.X << " " << p.Y << " " << convert_ThetatoDir(p.theta)<< "\n";
 }
@@ -63,16 +63,16 @@ void printcmd(const Move cmd){
     switch (cmd)
     {
     case Move::L :
-        cout << "< ";
+        cout << "L ";
         return;
     case Move::R :
-        cout <<  "> ";
+        cout <<  "R ";
         return;
     case Move::M :
-        cout <<  "^ ";
+        cout <<  "M ";
         return;
-    default: 
-        cout <<  "0   "; 
+    default:
+        cout <<  "0 "; 
         return;
     }
 }
@@ -157,6 +157,11 @@ void ReadFile(string path) {
 }
 
 // TODO: check if the cell is valid.
+bool CheckValidCell(const Pose& pos, const std::tuple<int, int>& gridSize) {
+    bool on_grid_x = (pos.X >= 0 && pos.X < std::get<0>(gridSize));
+    bool on_grid_y = (pos.Y >= 0 && pos.Y < std::get<1>(gridSize));
+
+}
 
 int main() 
 {   
