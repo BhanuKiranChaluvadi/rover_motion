@@ -20,8 +20,6 @@ $ make
 
 $ make test
 
-$ ./rover_binary
-
 ----
 
 # Run binaries

@@ -78,3 +78,45 @@ TEST(RoverTests,  commandExecution)
 
     EXPECT_TRUE(true);
 }
+
+TEST(RoverTests,  outGridCommandTest)
+{   
+    // Grid size
+    int xMax = 3;
+    int yMax = 3;
+    
+    // rover init pose & commands
+    int x = 2;
+    int y = 2;
+    char dir = 'E';
+    Position position;
+    position.x = x;
+    position.y = y;
+    position.theta = Rover::convertDirToTheata(dir);
+    std::string charCommands = "MML";
+
+    // make a grid
+    Grid grid(xMax, yMax);
+    // build rover
+    Rover rover(position);
+    // set commands
+    rover.setCommands(Rover::chartoCmd(charCommands));
+    // set grid
+    rover.setGrid(&grid);
+
+    // check for proper commands inputs
+    std::queue<Move> commands = rover.getCommands();
+    EXPECT_TRUE( charCommands == Rover::cmdtoChar(commands));
+    // execute
+    rover.executeCommnds();
+    Position finalPosition = rover.getPosition();
+    EXPECT_EQ(3,  finalPosition.x);
+    EXPECT_EQ(2,  finalPosition.y);
+    EXPECT_EQ('N',  Rover::convertThetaToDir(finalPosition.theta));
+
+    EXPECT_TRUE(true);
+} 
+
+
+
+

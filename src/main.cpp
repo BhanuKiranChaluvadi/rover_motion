@@ -94,7 +94,7 @@ int main(int argc, const char **argv) {
         // execute.
         rover->executeCommnds();
         Position position = rover->getPosition();
-        cout << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta) << "\n";
+        outfile << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta) << "\n";
     }
     delete grid;
     infile.close();
