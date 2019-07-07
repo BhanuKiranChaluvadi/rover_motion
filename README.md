@@ -20,6 +20,8 @@ $ make
 
 $ make test
 
+$ ./rover_binary
+
 [source,bash]
 ----
 
