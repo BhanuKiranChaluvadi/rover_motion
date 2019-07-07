@@ -1,31 +1,42 @@
-# Set the minimum version of CMake that can be used
 cmake_minimum_required(VERSION 3.5)
 
-# set flag
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_STANDARD_REQUIRED ON)
 
-# Set the project name
 project(rover)
 
-# Create a sources variable with a link to all cpp files to compile
-set(SOURCES
+############################################################
+# Create a library
+############################################################
+
+# Generate the static library from the library sources
+add_library(rover_library 
     src/Rover.cpp
-    src/main.cpp
 )
 
-# Add an executable with the above sources
-add_executable(rover_headers ${SOURCES})
-
-# Set the directories that should be included in the build command for this target
-# when running g++ these will be included as -I/directory/path/
-target_include_directories(rover_headers
-    PRIVATE 
+target_include_directories(rover_library
+    PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
 )
 
-#############################################
+############################################################
+# Create an executable
+############################################################
+
+# Add an executable with the above sources
+add_executable(rover_binary 
+    src/main.cpp
+)
+
+# link the new hello_library target with the hello_binary target
+target_link_libraries( rover_binary
+    PRIVATE 
+        rover_library
+)
+
+############################################################
 # Unit tests
+############################################################
 
 add_subdirectory(3rd_party/google-test)
 
@@ -36,7 +47,7 @@ enable_testing()
 add_executable(unit_tests unit_tests.cpp)
 
 target_link_libraries(unit_tests
-    example_google_test
+    rover_library
     GTest::GTest 
     GTest::Main
 )
