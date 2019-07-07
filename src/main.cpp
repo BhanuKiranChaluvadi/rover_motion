@@ -66,10 +66,21 @@ namespace builder
     }
 }
 
-int main() {
+int main(int argc, const char **argv) {
     // TODO: make this command line argument
-    string path = "../single_rover.txt";
-    ifstream myfile (path);
+
+    std::string input_file = "";
+    // if( argc > 1 ) {
+    //     for( int i = 1; i < argc; ++i )
+    //         if( std::string_view{argv[i]} == "-f" && ++i < argc )
+    //             input_file = argv[i];
+    // }
+    // else {
+    //     std::cout << "Usage: [executable] [-f filename.osm]" << std::endl;    
+    // }
+
+    input_file = "../single_rover.txt";
+    ifstream myfile (input_file);
     
     if (!myfile) return -1;
     
