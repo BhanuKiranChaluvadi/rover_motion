@@ -37,7 +37,7 @@ private:
 
 private:
 
-    bool checkValidCell(const Pose& , const std::tuple<int, int>& );
+    bool checkValidCell(const Pose& pos, const std::tuple<int, int>& gridSize);
 
     int convert_DirtoTheata(const char) const ;
 
@@ -52,8 +52,8 @@ private:
 
 public:
 
-    rover () {}
-    rover (int grid_x, int grid_y) : gridSize_(std::make_tuple (grid_x, grid_y)) {}
+    Rover () {}
+    Rover (int grid_x, int grid_y) : gridSize_(std::make_tuple (grid_x, grid_y)) {}
 
     void setGridSize(const int x, const int y) ;
 
