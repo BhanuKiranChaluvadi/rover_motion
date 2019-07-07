@@ -92,8 +92,6 @@ int main(int argc, const char **argv) {
     Grid *grid = builder::buildGrid(infile);
     
     if (!grid) return -1;
-    
-    
 
     // build all rovers
     vector<Rover*> rovers;

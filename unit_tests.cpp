@@ -191,3 +191,16 @@ TEST(RoverTests,  multiRover)
     EXPECT_EQ('S',  Rover::convertThetaToDir(finalPosition2.theta));
     EXPECT_FALSE(grid.isValidPosition(4, 4));
 }
+
+TEST(GridTests,  inbounds) 
+{
+    // Grid size
+    int xMax = 5;
+    int yMax = 5;
+    // make a grid
+    Grid grid(xMax, yMax);
+    EXPECT_TRUE(grid.inbound(0, 0));
+    EXPECT_TRUE(grid.inbound(2, 4));
+    EXPECT_TRUE(grid.inbound(5, 5));
+    EXPECT_FALSE(grid.inbound(6, 4));
+}

@@ -40,21 +40,22 @@ public:
             this->board.push_back(row);
         }
     }
-
+    bool inbound(int x, int y) {
+        return (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) ? true : false ;
+    }
     void setObstacle (int x, int y) {
-        if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
+        if (inbound(x, y)) {
             this->board[x][y] = State::kObstacle;
         }
     }
     void removeObstacle (int x, int y) {
-        if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
+        if (inbound(x, y)) {
             this->board[x][y] = State::kEmpty;
         }
     }
-
     bool isValidPosition(int x, int y) {
         // check if its currents reover position
-        if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
+        if (inbound(x, y)) {
             if (this->board[x][y] == State::kEmpty) {
                 return true;
             }
