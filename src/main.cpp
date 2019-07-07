@@ -68,7 +68,6 @@ namespace builder
 }
 
 int main(int argc, const char **argv) {
-    // TODO: make this command line argument
     std::string input_file = "";
     std::string output_file = "output.txt";
 

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <queue>
 #include <cmath>
+#include <sstream>
 using std::cout;
 using std::queue;
 
@@ -41,6 +42,7 @@ class Rover {
     queue<Move> commands;
     Grid *grid;
 
+    /* Bounds the theta between 0-360 degrees. or Project all angles onto 0-360 degrees.*/
     int normalizeTheta(int theta){
         theta = theta % 360 ;
         if(theta < 0) {
@@ -86,8 +88,14 @@ public:
     ~Rover() {
         // cout << "Rover destroyed !!  \n";
     }
+    Position getPosition() {
+        return this->position;
+    }
     void setCommands(queue<Move> commands) {
         this->commands = commands;
+    }
+    std::queue<Move> getCommands (){
+        return this->commands;
     }
     void setGrid(Grid *grid) {
         this->grid = grid;
@@ -98,10 +106,7 @@ public:
             this->commands.pop();
         }
     }
-    Position getPosition() {
-        return this->position;
-    }
-
+    
     static int convertDirToTheata(const char dir) {
         if      (dir == 'E') return 0;
         else if (dir == 'N') return 90;
@@ -123,6 +128,45 @@ public:
             return 'x';
         }
     }
+
+    // Helper function - unit test
+    static std::queue<Move> chartoCmd(std::string line) {
+        std::istringstream sline(line);
+        queue<Move> commands;
+        char c;
+        while (sline >> c ) {
+                    if(c == 'L') commands.push(Move::L);
+                    else if (c == 'R') commands.push(Move::R);
+                    else if (c == 'M') commands.push(Move::M);
+                    else cout << " Move command not found \n";
+                }
+        return commands;
+    }
+
+    // Helper function - unit test
+    static std::string cmdtoChar(std::queue<Move> cmds) {
+        std::string chars="";
+        while (!cmds.empty()) {
+            Move cmd = cmds.front();
+            switch (cmd) {
+                case Move::L : {
+                    chars = chars + 'L';
+                    break;
+                }
+                case Move::R : {
+                    chars = chars + 'R';
+                    break;
+                }
+                case Move::M : {
+                    chars = chars + 'M';
+                    break;
+                }
+            }
+            cmds.pop();
+        }
+        return chars;
+    }
+
 };
 
 # endif // ROVER_H_

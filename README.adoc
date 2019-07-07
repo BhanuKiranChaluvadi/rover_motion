@@ -22,6 +22,15 @@ $ make test
 
 $ ./rover_binary
 
+----
+
+# Run binaries
 [source,bash]
+----
+-- binary [inputFile] [OutputFile]
+$ ./rover_binary ../sample.txt ../output.txt 
+
+-- detailed unit test output
+$ ./unit_tests 
 ----
 
