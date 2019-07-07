@@ -80,6 +80,7 @@ int main() {
     while (Rover *rover = builder::buildRover(myfile, grid)) {
         // execute.
         rover->executeCommnds();
-        rover->printPosition();
+        Position position = rover->getPosition();
+        cout << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta);
     }
 }

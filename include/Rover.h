@@ -95,7 +95,9 @@ public:
             this->commands.pop();
         }
     }
-    void printPosition() {}
+    Position getPosition() {
+        return this->position;
+    }
 
     static int convertDirToTheata(const char dir) {
         if      (dir == 'E') return 0;
