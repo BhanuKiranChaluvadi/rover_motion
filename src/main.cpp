@@ -81,6 +81,6 @@ int main() {
         // execute.
         rover->executeCommnds();
         Position position = rover->getPosition();
-        cout << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta);
+        cout << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta) << "\n";
     }
 }

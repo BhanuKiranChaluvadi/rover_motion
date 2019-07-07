@@ -29,7 +29,7 @@ public:
         this->y_bound = y;
     }
     bool isValidPosition(int x, int y) {
-        if (x >= 0 && y >= 0 && x < x_bound && y < y_bound) {
+        if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
             return true;
         }
         return false;
