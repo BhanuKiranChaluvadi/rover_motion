@@ -35,7 +35,10 @@ namespace builder
                 if(c == 'L') commands.push(Move::L);
                 else if (c == 'R') commands.push(Move::R);
                 else if (c == 'M') commands.push(Move::M);
-                else cout << " Move command not found \n";
+                else {
+                    // cout << " Move command not found \n";
+                    continue;
+                }
             }
             return commands;
         }
@@ -51,13 +54,14 @@ namespace builder
         return new Grid(x, y);
     }
     
-    std::unique_ptr<Rover> buildRover(ifstream &fin, Grid *grid) {
+    Rover* buildRover(ifstream &fin, Grid *grid) {
         // get position
         string line;
         if(!getline(fin, line)) return NULL;
         Position position = parsePosition(line);
-        
-        std::unique_ptr<Rover> rover(new Rover(position));
+        // block the grid cell
+        grid->setObstacle(position.x, position.y);
+        Rover* rover(new Rover(position));
         // get commands
         if(!getline(fin, line)) return NULL;
         rover->setCommands(parseCommands(line));
@@ -89,13 +93,26 @@ int main(int argc, const char **argv) {
     
     if (!grid) return -1;
     
-    std::unique_ptr<Rover> rover ;
-    while (rover = std::move( builder::buildRover(infile, grid))) {
+    
+
+    // build all rovers
+    vector<Rover*> rovers;
+    while(Rover* rover = builder::buildRover(infile, grid)) {
+        rovers.push_back(rover);
+    }
+
+    for (auto rover : rovers) {
+        // remove self obstacle
+        grid->removeObstacle(rover->getPosition().x, rover->getPosition().y);
         // execute.
         rover->executeCommnds();
         Position position = rover->getPosition();
+        // update the obstacle
+        grid->setObstacle(position.x, position.y);
         outfile << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta) << "\n";
-    }
+        delete rover;
+    }   
+
     delete grid;
     infile.close();
     outfile.close();

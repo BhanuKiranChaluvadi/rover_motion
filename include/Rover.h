@@ -46,12 +46,20 @@ public:
             this->board[x][y] = State::kObstacle;
         }
     }
+    void removeObstacle (int x, int y) {
+        if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
+            this->board[x][y] = State::kEmpty;
+        }
+    }
 
     bool isValidPosition(int x, int y) {
+        // check if its currents reover position
         if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
             if (this->board[x][y] == State::kEmpty) {
                 return true;
             }
+            else
+                return false;
         }
         return false;
     }
@@ -90,12 +98,12 @@ class Rover {
                     this->position.y = newY;
                 } 
                 else {
-                    cout << "Invalid move !! \n";    
+                    // cout << "Invalid move !! \n";    
                 }
                 break;
             }
             default: {
-                cout << "command not found !! " ;
+                // cout << "command not found !! " ;
                 break;
             }
         }
