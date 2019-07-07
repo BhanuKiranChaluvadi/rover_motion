@@ -3,9 +3,12 @@
 #include <sstream>
 #include <queue>
 #include <string>
+#include <memory> // for std::unique_ptr
+
 #include "Rover.h"
 using std::cout;
 using std::ifstream;
+using std::ofstream;
 using std::istringstream;
 using std::string;
 
@@ -50,13 +53,13 @@ namespace builder
         return new Grid(x, y);
     }
     
-    Rover* buildRover(ifstream &fin, Grid *grid) {
+    std::unique_ptr<Rover> buildRover(ifstream &fin, Grid *grid) {
         // get position
         string line;
         if(!getline(fin, line)) return NULL;
         Position position = parsePosition(line);
         
-        Rover *rover = new Rover(position);
+        std::unique_ptr<Rover> rover(new Rover(position));
         // get commands
         if(!getline(fin, line)) return NULL;
         rover->setCommands(parseCommands(line));
@@ -70,6 +73,7 @@ int main(int argc, const char **argv) {
     // TODO: make this command line argument
 
     std::string input_file = "";
+    std::string output_file = "";
     // if( argc > 1 ) {
     //     for( int i = 1; i < argc; ++i )
     //         if( std::string_view{argv[i]} == "-f" && ++i < argc )
@@ -79,19 +83,28 @@ int main(int argc, const char **argv) {
     //     std::cout << "Usage: [executable] [-f filename.osm]" << std::endl;    
     // }
 
-    input_file = "../single_rover.txt";
-    ifstream myfile (input_file);
+    input_file = "../sample.txt";
+    output_file = "../output.txt";
+
+    ifstream infile (input_file);
+    ofstream outfile (output_file);
+
+    if (!infile || !outfile) return -1;
     
-    if (!myfile) return -1;
-    
-    Grid *grid = builder::buildGrid(myfile);
+    Grid *grid = builder::buildGrid(infile);
     
     if (!grid) return -1;
     
-    while (Rover *rover = builder::buildRover(myfile, grid)) {
+    std::unique_ptr<Rover> rover ;
+    while (rover = std::move( builder::buildRover(infile, grid))) {
         // execute.
         rover->executeCommnds();
         Position position = rover->getPosition();
         cout << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta) << "\n";
     }
+
+    infile.close();
+    outfile.close();
+
+    return 0;
 }

@@ -83,6 +83,9 @@ public:
     Rover (Position position) {
         this->position = position;
     }
+    ~Rover() {
+        // cout << "Rover destroyed !!  \n";
+    }
     void setCommands(queue<Move> commands) {
         this->commands = commands;
     }
