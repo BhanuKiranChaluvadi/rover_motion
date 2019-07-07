@@ -1,10 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <queue>
 #include <string>
 #include <memory> // for std::unique_ptr
-
 #include "Rover.h"
 using std::cout;
 using std::ifstream;
@@ -71,21 +69,18 @@ namespace builder
 
 int main(int argc, const char **argv) {
     // TODO: make this command line argument
-
     std::string input_file = "";
-    std::string output_file = "";
-    // if( argc > 1 ) {
-    //     for( int i = 1; i < argc; ++i )
-    //         if( std::string_view{argv[i]} == "-f" && ++i < argc )
-    //             input_file = argv[i];
-    // }
-    // else {
-    //     std::cout << "Usage: [executable] [-f filename.osm]" << std::endl;    
-    // }
+    std::string output_file = "output.txt";
 
-    input_file = "../sample.txt";
-    output_file = "../output.txt";
+    if( argc > 2 ) {
+        input_file = argv[1];
+        output_file = argv[2];
+    }
+    else {
+        std::cout << "Usage: [executable] [inputFile] [outputFile]" << std::endl;  
 
+    }
+    
     ifstream infile (input_file);
     ofstream outfile (output_file);
 
@@ -102,7 +97,7 @@ int main(int argc, const char **argv) {
         Position position = rover->getPosition();
         cout << position.x <<" "<< position.y << " "<< Rover::convertThetaToDir(position.theta) << "\n";
     }
-
+    delete grid;
     infile.close();
     outfile.close();
 
