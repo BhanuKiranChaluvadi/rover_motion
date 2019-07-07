@@ -21,13 +21,13 @@ struct Position {
 class Grid {
     int x_bound;
     int y_bound;
-    
+
+public:
+
     Grid(int x, int y) {
         this->x_bound = x;
         this->y_bound = y;
     }
-    
-public:
     bool isValidPosition(int x, int y) {
         if (x >= 0 && y >= 0 && x < x_bound && y < y_bound) {
             return true;
@@ -52,26 +52,30 @@ class Rover {
     void executeCommand(Move command) {
         switch (command)
         {
-        case Move::L :
-            this->position.theta = normalizeTheta(this->position.theta + 90);
-            break;
-        case Move::R :
-            this->position.theta = normalizeTheta(this->position.theta - 90);
-            break;
-        case Move::M :
-            int newX = this->position.x + round(cos(this->position.theta * PI / 180)) ;
-            int newY = this->position.y + round(sin(this->position.theta * PI / 180)) ;
-            if (grid->isValidPosition(newX, newY)) {
-                this->position.x = newX;
-                this->position.y = newY;
-            } 
-            else {
-                cout << "Invalid move !! \n";    
+            case Move::L : {
+                this->position.theta = normalizeTheta(this->position.theta + 90);
+                break;
             }
-            break;
-        default:
-            cout << "command not found !! " ;
-            break;
+            case Move::R : {
+                this->position.theta = normalizeTheta(this->position.theta - 90);
+                break;
+            }
+            case Move::M : {
+                int newX = this->position.x + round(cos(this->position.theta * PI / 180)) ;
+                int newY = this->position.y + round(sin(this->position.theta * PI / 180)) ;
+                if (grid->isValidPosition(newX, newY)) {
+                    this->position.x = newX;
+                    this->position.y = newY;
+                } 
+                else {
+                    cout << "Invalid move !! \n";    
+                }
+                break;
+            }
+            default: {
+                cout << "command not found !! " ;
+                break;
+            }
         }
     }
     
@@ -85,9 +89,15 @@ public:
     void setGrid(Grid *grid) {
         this->grid = grid;
     }
+    void executeCommnds() {
+        while (!commands.empty()) {
+            executeCommand(commands.front());
+            this->commands.pop();
+        }
+    }
     void printPosition() {}
 
-    static int convertDirToTheata(const char dir) const {
+    static int convertDirToTheata(const char dir) {
         if      (dir == 'E') return 0;
         else if (dir == 'N') return 90;
         else if (dir == 'W') return 180;
@@ -98,7 +108,7 @@ public:
         }
     }
 
-    static char convertThetaToDir(const int theta) const {
+    static char convertThetaToDir(const int theta)  {
         if (theta == 0  || theta == 360) return 'E';
         else if (theta == 90)   return 'N';
         else if (theta == 180)  return 'W';

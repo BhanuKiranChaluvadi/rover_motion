@@ -1,8 +1,12 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 #include <queue>
+#include <string>
 #include "Rover.h"
+using std::cout;
+using std::ifstream;
+using std::istringstream;
 using std::string;
 
 namespace builder 
@@ -10,14 +14,14 @@ namespace builder
     // private utiltiy functions
     namespace {
         
-        position parsePosition(string line) {
+        Position parsePosition(string line) {
             istringstream sline(line);
             int x, y;
             char c;
             sline >> x >> y >> c ;
-            position pos;
-            pos.X = x;
-            pos.Y = y;
+            Position pos;
+            pos.x = x;
+            pos.y = y;
             pos.theta = Rover::convertDirToTheata(c);
             return pos;
         }
@@ -34,7 +38,6 @@ namespace builder
             }
             return commands;
         }
-
     }
    
     Grid* buildGrid(ifstream &fin) {
@@ -51,7 +54,7 @@ namespace builder
         // get position
         string line;
         if(!getline(fin, line)) return NULL;
-        position = parsePosition(line);
+        Position position = parsePosition(line);
         
         Rover *rover = new Rover(position);
         // get commands
@@ -68,11 +71,11 @@ int main() {
     string path = "../single_rover.txt";
     ifstream myfile (path);
     
-    if (!myfile) return;
+    if (!myfile) return -1;
     
     Grid *grid = builder::buildGrid(myfile);
     
-    if (!grid) return;
+    if (!grid) return -1;
     
     while (Rover *rover = builder::buildRover(myfile, grid)) {
         // execute.
