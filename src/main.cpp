@@ -1,43 +1,82 @@
-// g++ -std="c++17" -pthread main.cpp && ./a.out
-
 #include <iostream>
-
+#include <fstream>
+#include <sstream>
+#include <queue>
 #include "Rover.h"
+using std::string;
 
-int main (int argc, const char **argv) {
-    // std::string input_file = "";
-    // if( argc > 1 ) {
-    //     for( int i = 1; i < argc; ++i )
-    //         if( std::string_view{argv[i]} == "-f" && ++i < argc )
-    //             input_file = argv[i];
-    // }
-    // else {
-    //     std::cout << "Usage: [executable] [-f input_file.txt]" << std::endl;    
-    // }
+namespace builder 
+{
+    // private utiltiy functions
+    namespace {
+        
+        position parsePosition(string line) {
+            istringstream sline(line);
+            int x, y;
+            char c;
+            sline >> x >> y >> c ;
+            position pos;
+            pos.X = x;
+            pos.Y = y;
+            pos.theta = Rover::convertDirToTheata(c);
+            return pos;
+        }
+        
+        queue<Move> parseCommands(string line) {
+            istringstream sline(line);
+            queue<Move> commands;
+            char c;
+            while (sline >> c ) {
+                if(c == 'L') commands.push(Move::L);
+                else if (c == 'R') commands.push(Move::R);
+                else if (c == 'M') commands.push(Move::M);
+                else cout << " Move command not found \n";
+            }
+            return commands;
+        }
 
+    }
+   
+    Grid* buildGrid(ifstream &fin) {
+        int x, y;
+        string line;
+        
+        if(!getline(fin, line)) return NULL;
+        istringstream sline(line);
+        sline >> x >> y ;
+        return new Grid(x, y);
+    }
+    
+    Rover* buildRover(ifstream &fin, Grid *grid) {
+        // get position
+        string line;
+        if(!getline(fin, line)) return NULL;
+        position = parsePosition(line);
+        
+        Rover *rover = new Rover(position);
+        // get commands
+        if(!getline(fin, line)) return NULL;
+        rover->setCommands(parseCommands(line));
+        
+        rover->setGrid(grid);
+        return rover;
+    }
+}
+
+int main() {
+    // TODO: make this command line argument
     string path = "../single_rover.txt";
     ifstream myfile (path);
-    if (myfile) {
-        // Get the first line and set grid size.
-        int grid_x, grid_y;
-        string line;
-        getline(myfile, line);
-        istringstream sline(line);
-        sline >> grid_x >> grid_y ;
-        Rover R(grid_x, grid_y);
-        // get position line
-        getline(myfile, line);
-        R.parsePoseLine(line);
-        R.printPose();
-        // get commands line
-        getline(myfile, line);
-        R.parseCmdsLine(line);
-        R.printCmds();
-        cout << "\n";
+    
+    if (!myfile) return;
+    
+    Grid *grid = builder::buildGrid(myfile);
+    
+    if (!grid) return;
+    
+    while (Rover *rover = builder::buildRover(myfile, grid)) {
         // execute.
-        R.executeCmds();
-        R.printPose();
+        rover->executeCommnds();
+        rover->printPosition();
     }
-    else
-        cout << "File not found /n";
 }
