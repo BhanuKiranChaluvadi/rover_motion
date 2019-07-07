@@ -15,7 +15,7 @@ int main (int argc, const char **argv) {
     //     std::cout << "Usage: [executable] [-f input_file.txt]" << std::endl;    
     // }
 
-    string path = "cmd.txt";
+    string path = "../single_rover.txt";
     ifstream myfile (path);
     if (myfile) {
         // Get the first line and set grid size.
@@ -38,6 +38,6 @@ int main (int argc, const char **argv) {
         R.executeCmds();
         R.printPose();
     }
-
-    
+    else
+        cout << "File not found /n";
 }
