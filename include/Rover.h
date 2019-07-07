@@ -2,15 +2,18 @@
 #define ROVER_H_
 
 #include <iostream>
+#include <vector>
 #include <queue>
 #include <cmath>
 #include <sstream>
 using std::cout;
+using std::vector;
 using std::queue;
 
 #define PI 3.14159265
 
 enum class Move{L, R, M};
+enum class State{kEmpty, kObstacle};
 
 struct Position {
     int x;
@@ -22,16 +25,33 @@ struct Position {
 class Grid {
     int x_bound;
     int y_bound;
+    vector<vector<State>> board{};
 
 public:
 
     Grid(int x, int y) {
         this->x_bound = x;
         this->y_bound = y;
+        for(uint i=0; i<=x; ++i){
+            vector<State> row{};
+            for(uint j=0; j<=y; ++j){
+                row.push_back(State::kEmpty);
+            }
+            this->board.push_back(row);
+        }
     }
+
+    void setObstacle (int x, int y) {
+        if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
+            this->board[x][y] = State::kObstacle;
+        }
+    }
+
     bool isValidPosition(int x, int y) {
         if (x >= 0 && y >= 0 && x <= x_bound && y <= y_bound) {
-            return true;
+            if (this->board[x][y] == State::kEmpty) {
+                return true;
+            }
         }
         return false;
     }

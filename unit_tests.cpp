@@ -75,8 +75,6 @@ TEST(RoverTests,  commandExecution)
     EXPECT_EQ(5,  finalPosition.x);
     EXPECT_EQ(1,  finalPosition.y);
     EXPECT_EQ('E',  Rover::convertThetaToDir(finalPosition.theta));
-
-    EXPECT_TRUE(true);
 }
 
 TEST(RoverTests,  outGridCommandTest)
@@ -113,10 +111,18 @@ TEST(RoverTests,  outGridCommandTest)
     EXPECT_EQ(3,  finalPosition.x);
     EXPECT_EQ(2,  finalPosition.y);
     EXPECT_EQ('N',  Rover::convertThetaToDir(finalPosition.theta));
-
-    EXPECT_TRUE(true);
 } 
 
 
+TEST(GridTests,  obstacleTest)
+{
+    // Grid size
+    int xMax = 7;
+    int yMax = 7;
 
-
+    // make a grid
+    Grid grid(xMax, yMax);
+    EXPECT_TRUE(grid.isValidPosition(3, 3));
+    grid.setObstacle(3, 3);
+    EXPECT_FALSE(grid.isValidPosition(3, 3));
+}
